@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>General Assessment Response Viewer & Evaluation System</title>
+  <meta name="description" content="A private, mobile-first, shareable viewer for original Student Council General Assessment responses with transparent answer-level evaluation, 1-5 star ratings, and candidate classification.">
+  <meta name="theme-color" content="#080A0D">
+  
+  <link rel="icon" type="image/svg+xml" href="assets/icon.svg">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Full Application Wrapper -->
+  <div class="app-wrapper">
+
+    <!-- Desktop Sidebar (Hidden on Mobile) -->
+    <aside class="app-sidebar" id="desktopSidebar" aria-label="Respondents Navigation">
+      <div class="sidebar-header">
+        <div class="sidebar-brand-group">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div class="sidebar-title">ASSESSMENT VIEWER</div>
+        </div>
+        <div class="sidebar-subtitle">Student Council Candidate Evaluation System</div>
+
+        <!-- Assessment Type Switcher (General vs Technical) -->
+        <div class="assessment-switcher-box">
+          <div class="switcher-legend">ASSESSMENT TYPE</div>
+          <div class="assessment-switcher-tabs" role="tablist">
+            <button type="button" class="assessment-tab-btn active" id="tabGeneralDesktop" data-type="general" role="tab" aria-selected="true">
+              <span class="tab-icon">📘</span>
+              <span class="tab-title">General</span>
+              <span class="active-pulse-dot"></span>
+            </button>
+            <button type="button" class="assessment-tab-btn" id="tabTechnicalDesktop" data-type="technical" role="tab" aria-selected="false">
+              <span class="tab-icon">💻</span>
+              <span class="tab-title">Technical</span>
+              <span class="tab-separate-badge">Separate</span>
+            </button>
+          </div>
+          <div class="active-view-badge" id="sidebarActiveViewBadge">
+            <span class="badge-dot"></span>
+            <span>Active: <strong>General Assessment</strong></span>
+          </div>
+        </div>
+
+        <!-- Evaluator Identity & Classification Dashboard Quick Bar -->
+        <div style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;">
+          <button type="button" class="identity-chip-btn" id="desktopIdentityBtn" title="Evaluator Identity">
+            <span class="identity-avatar-dot"></span>
+            <span class="identity-name-text" id="desktopIdentityName">Identify Yourself</span>
+            <span class="identity-change-tag" id="desktopIdentityAction">Sign In</span>
+          </button>
+          
+          <button type="button" class="overview-nav-btn" id="desktopOverviewBtn" title="View General Assessment Classification Report">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="9"></rect>
+              <rect x="14" y="3" width="7" height="5"></rect>
+              <rect x="14" y="12" width="7" height="9"></rect>
+              <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+            <span>Candidate Overview Table</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="sidebar-search-box">
+        <div class="search-input-wrapper">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input 
+            type="text" 
+            class="search-input" 
+            id="desktopSearchInput" 
+            placeholder="Search candidate name, ID, div..." 
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Search candidates"
+          >
+          <button type="button" class="search-clear-btn" id="desktopSearchClear" aria-label="Clear search input">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="filter-tabs" id="desktopFilterTabs" role="tablist" aria-label="Division filter tabs">
+        <button type="button" class="filter-btn active" data-division="ALL" role="tab">All (13)</button>
+        <button type="button" class="filter-btn" data-division="A" role="tab">Div A (7)</button>
+        <button type="button" class="filter-btn" data-division="B" role="tab">Div B (6)</button>
+      </div>
+
+      <div class="sidebar-list-container" id="desktopRespondentList" role="navigation" aria-label="List of Candidates">
+        <!-- Rendered by app.js -->
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main class="app-main" id="mainContentArea">
+
+      <!-- Mobile Header Bar (Sticky on Mobile) -->
+      <header class="mobile-header" id="mobileHeader">
+        <div class="mobile-brand">
+          <div class="brand-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+          </div>
+          <div>
+            <div class="brand-title" id="mobileHeaderTitle">GENERAL ASSESSMENT</div>
+            <div class="brand-mode-sub" id="mobileHeaderSub">Evaluation Active</div>
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button type="button" class="identity-chip-btn" id="mobileIdentityBtn" title="Evaluator Identity" style="padding: 5px 9px;">
+            <span class="identity-avatar-dot"></span>
+            <span class="identity-name-text" id="mobileIdentityName" style="max-width: 80px;">Sign In</span>
+          </button>
+
+          <button type="button" class="mobile-resp-trigger" id="mobileSelectTrigger" aria-label="Open candidate selector modal">
+            <span id="mobileSelectedNameBadge">Select</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Reader Content Container -->
+      <div class="content-container">
+
+        <!-- Assessment Switcher Banner on Mobile -->
+        <div class="mobile-assessment-switcher">
+          <button type="button" class="mobile-switch-btn active" id="tabGeneralMobile" data-type="general">
+            📘 General Assessment
+          </button>
+          <button type="button" class="mobile-switch-btn" id="tabTechnicalMobile" data-type="technical">
+            💻 Technical Assessment <span class="tab-separate-badge">Separate</span>
+          </button>
+        </div>
+
+        <!-- Sticky Navigation & Action Controls -->
+        <nav class="action-bar-sticky" aria-label="Pagination and Display Controls">
+          <div class="nav-controls">
+            <button type="button" class="nav-btn" id="prevRespondentBtn" aria-label="Previous candidate">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              <span>Prev</span>
+            </button>
+
+            <span class="resp-counter-text" id="respondentCounter">Candidate 1 of 13</span>
+
+            <button type="button" class="nav-btn" id="nextRespondentBtn" aria-label="Next candidate">
+              <span>Next</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+
+          <div class="top-actions-right">
+            <a href="general_assessment_offline.html" download="general_assessment_offline.html" class="overview-nav-btn download-offline-btn" id="actionDownloadOfflineBtn" title="Download Standalone Offline HTML Page" style="background: rgba(16, 185, 129, 0.15); border-color: rgba(16, 185, 129, 0.4); color: var(--accent-emerald); text-decoration: none;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download Offline</span>
+            </a>
+
+            <button type="button" class="overview-nav-btn" id="actionOverviewBtn" aria-label="Open Candidate Overview Table">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="9"></rect>
+                <rect x="14" y="3" width="7" height="5"></rect>
+                <rect x="14" y="12" width="7" height="9"></rect>
+                <rect x="3" y="16" width="7" height="5"></rect>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+
+            <button type="button" class="toggle-eval-btn" id="toggleEvaluationBtn" aria-label="Toggle Original Assessment Details">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+              <span>Show Details</span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Technical Assessment Notice View (Shown only when viewing Technical Assessment) -->
+        <div id="technicalAssessmentView" style="display: none;">
+          <!-- Populated dynamically when Technical Assessment tab is active -->
+        </div>
+
+        <!-- General Assessment Evaluation Wrapper (Shown when General Assessment is active) -->
+        <div id="generalAssessmentView">
+          
+          <!-- 1. CANDIDATE STATUS (Explicitly placed ABOVE candidate name as per Section 3) -->
+          <div id="candidateStatusAboveContainer"></div>
+
+          <!-- 2. Candidate Profile Header (Candidate Name, Candidate ID e.g. GA-024) -->
+          <div id="profileCardContainer"></div>
+
+          <!-- 3. Assessment Score Overview (Section 16: Two separate cards for General and Technical) -->
+          <div id="scoreOverviewContainer"></div>
+
+          <!-- 4. Report Action Toolbar (Candidate Report & Evaluator Reports) -->
+          <div id="reportActionsContainer"></div>
+
+          <!-- 5. Question Quick Jump Nav Container -->
+          <div id="questionJumpContainer"></div>
+
+          <!-- 6. Question & Answer Cards Sequential Stream (Answer-level opinion & 1-5 star ratings) -->
+          <div id="questionCardsContainer"></div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+  </div>
+
+  <!-- Mobile Drawer / Bottom Sheet Selector Modal -->
+  <div class="modal-backdrop" id="modalBackdrop"></div>
+  <div class="mobile-drawer" id="mobileDrawer" role="dialog" aria-modal="true" aria-label="Select Candidate">
+    <div class="drawer-drag-handle"></div>
+    <div class="drawer-header">
+      <div class="drawer-title">Select Candidate</div>
+      <button type="button" class="drawer-close-btn" id="mobileDrawerClose" aria-label="Close candidate drawer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+
+    <div class="sidebar-search-box">
+      <div class="search-input-wrapper">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input 
+          type="text" 
+          class="search-input" 
+          id="mobileSearchInput" 
+          placeholder="Search name, ID, or div..." 
+          autocomplete="off"
+          spellcheck="false"
+          aria-label="Search candidates"
+        >
+        <button type="button" class="search-clear-btn" id="mobileSearchClear" aria-label="Clear mobile search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="filter-tabs" id="mobileFilterTabs" role="tablist">
+      <button type="button" class="filter-btn active" data-division="ALL" role="tab">All (13)</button>
+      <button type="button" class="filter-btn" data-division="A" role="tab">Div A (7)</button>
+      <button type="button" class="filter-btn" data-division="B" role="tab">Div B (6)</button>
+    </div>
+
+    <div class="sidebar-list-container" id="mobileRespondentList" role="listbox">
+      <!-- Populated dynamically -->
+    </div>
+  </div>
+
+  <!-- Participant / Evaluator Identity Registration Modal -->
+  <div class="modal-center-container" id="identityModal">
+    <div class="identity-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="identityModalTitle">
+      <div class="identity-modal-header">
+        <h2 class="identity-modal-title" id="identityModalTitle">Evaluator Identification</h2>
+        <p class="identity-modal-subtitle">Enter your name to participate in the General Assessment evaluation system. Every classification, opinion, and star rating is transparently attributed.</p>
+      </div>
+
+      <form id="identityForm" onsubmit="return false;">
+        <div class="identity-form-group">
+          <label class="identity-form-label" for="identityInputName">Your Full Name <span style="color:var(--accent-rose)">*</span></label>
+          <input 
+            type="text" 
+            class="identity-input" 
+            id="identityInputName" 
+            placeholder="Enter your full name" 
+            required 
+            autocomplete="name"
+          >
+        </div>
+
+        <div class="identity-form-group">
+          <label class="identity-form-label" for="identityInputId">Student / Employee ID <span style="color:var(--text-muted); font-weight:normal">(Optional)</span></label>
+          <input 
+            type="text" 
+            class="identity-input" 
+            id="identityInputId" 
+            placeholder="Optional ID or Roll Number" 
+            autocomplete="off"
+          >
+        </div>
+
+        <div class="identity-notice-box">
+          <strong style="color:var(--text-primary)">Transparent Evaluation System:</strong>
+          This platform is intentionally transparent. Your name will be displayed next to your candidate classifications, answer agreements, and 1–5 star ratings.
+        </div>
+
+        <button type="submit" class="identity-submit-btn" id="identitySubmitBtn">
+          Continue to General Assessment
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Overall General Assessment Classification Report & Dashboard Modal (Section 12) -->
+  <div class="modal-center-container" id="overviewModal">
+    <div class="overview-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="overviewModalTitle">
+      <div class="overview-modal-header">
+        <div class="overview-modal-title" id="overviewModalTitle">📊 General Assessment — Candidate Overview Dashboard</div>
+        <button type="button" class="drawer-close-btn" id="overviewModalClose" aria-label="Close overview modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="overview-modal-body" id="overviewModalBody">
+        <div style="text-align:center; padding:40px; color:var(--text-muted)">Loading dashboard overview...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Candidate General Assessment Report Modal (Section 11) -->
+  <div class="modal-center-container" id="candidateReportModal">
+    <div class="overview-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="candidateReportModalTitle">
+      <div class="overview-modal-header">
+        <div class="overview-modal-title" id="candidateReportModalTitle">📑 Candidate General Assessment Report</div>
+        <button type="button" class="drawer-close-btn" id="candidateReportModalClose" aria-label="Close candidate report modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="overview-modal-body" id="candidateReportModalBody">
+        <div style="text-align:center; padding:40px; color:var(--text-muted)">Loading candidate report...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Individual Evaluator Report Modal (Section 10) -->
+  <div class="modal-center-container" id="evaluatorReportModal">
+    <div class="overview-modal-dialog" role="dialog" aria-modal="true" aria-labelledby="evaluatorReportModalTitle">
+      <div class="overview-modal-header">
+        <div class="overview-modal-title" id="evaluatorReportModalTitle">👥 Individual Evaluator Reports</div>
+        <button type="button" class="drawer-close-btn" id="evaluatorReportModalClose" aria-label="Close evaluator report modal">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="overview-modal-body" id="evaluatorReportModalBody">
+        <div style="text-align:center; padding:40px; color:var(--text-muted)">Loading evaluator reports...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Banner -->
+  <div class="toast-message" id="toastMessage" role="status" aria-live="polite">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span class="toast-text">Notification</span>
+  </div>
+
+  <!-- Bundled Data Script (Allows local double-click file:// execution without CORS failure) -->
+  <script src="js/data.js"></script>
+  <!-- Search and Filter Engine -->
+  <script src="js/search.js"></script>
+  <!-- Identity & Evaluation API Client -->
+  <script src="js/evaluation.js"></script>
+  <!-- Core Application Logic -->
+  <script src="js/app.js"></script>
+</body>
+</html>
